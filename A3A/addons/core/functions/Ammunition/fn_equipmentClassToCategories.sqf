@@ -19,7 +19,6 @@ private _fnc_isDisposable = {
     getNumber (_config >> "rhs_disposable") == 1
     or {getArray (_config >> "magazines") param [0, ""] == "CBA_fakeLauncherMagazine"}
     or {getText (_config >> "UK3CB_used_launcher") != ""}
-    or {getText (_config >> "ace_UsedTube") != ""}
 };
 
 // First check if the item has hardcoded categories

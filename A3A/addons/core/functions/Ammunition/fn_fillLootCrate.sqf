@@ -200,7 +200,15 @@ if (_crateWepTypeMax != 0) then {
 		else
 		{
 			_amount = if (isNil "_crateWepNum") then {crateWepNumMax call _fnc_pickAmount;} else {_crateWepNum};
-			_crate addWeaponWithAttachmentsCargoGlobal [[ _loot, "", "", "", [], [], ""], _amount];
+			// Preload disposables: some (eg. vn_m72, SPE panzerfausts) don't create their rocket when picked up.
+			// CBA ones use a 0-round fake magazine and swap themselves to a loaded class, so they're skipped
+			private _primaryMag = [];
+			if (_loot in allDisposable) then {
+				private _mag = getArray (configFile >> "CfgWeapons" >> _loot >> "magazines") param [0, ""];
+				private _rounds = getNumber (configFile >> "CfgMagazines" >> _mag >> "count");
+				if (_rounds > 0) then { _primaryMag = [_mag, _rounds] };
+			};
+			_crate addWeaponWithAttachmentsCargoGlobal [[ _loot, "", "", "", _primaryMag, [], ""], _amount];
             Verbose_2("Adding %1 weapons of type %2", _amount, _loot);
 
 			private _magazines = compatibleMagazines _loot;
